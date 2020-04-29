@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace KaleidaxBlazorApp1
 {
+    public class ImagePath
+    {
+        public string ImageUrl { get; set; }
+    }
+
     public class Scope
     {
         public string ImageUrl { get; set; }
@@ -24,7 +30,6 @@ namespace KaleidaxBlazorApp1
         public int SpeedX { get; set; } = new Random().Next(3, 7);
         public int SpeedY { get; set; } = new Random().Next(3, 7);
         public int Index { get; } = 0;
-
         private static int trackIndex = 0;
         private const int max = 30000;
 

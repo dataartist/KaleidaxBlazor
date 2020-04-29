@@ -1,11 +1,15 @@
 ﻿@page "/Kaleidax"
 @inject IJSRuntime jsRuntime
+@inject HttpClient Http
 @using System.Threading;
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+
 
 <section id="audiotracks">
     @foreach (var scope in scopes)
     {
-        <audio id="audio@(scope.Index)" loop><source id="playerSource@(scope.Index)" src="audio/track@(scope.Index).mp3" /></audio>
+    <audio id="audio@(scope.Index)" loop><source id="playerSource@(scope.Index)" src="audio/track@(scope.Index).mp3" /></audio>
     }
 </section>
 
@@ -26,43 +30,43 @@
         <tr style="padding:10px;">
             @foreach (var scope in scopes)
             {
-                <td style="padding:10px;">
-                    <div>
-                        <section class="@kaleidax" imagepath="@scope.ImageUrl" id="k@(scope.Index)">
-                            <div class="@kFrame @(scope.RotatingClass)" @onmousemove="(() => SetScope(scope))">
-                                <div class="@kSectors">
-                                    @for (int i = 1; i <= 12; i++)
+            <td style="padding:10px;">
+                <div>
+                    <section class="@kaleidax" imagepath="@scope.ImageUrl" id="k@(scope.Index)">
+                        <div class="@kFrame @(scope.RotatingClass)" @onmousemove="(() => SetScope(scope))">
+                            <div class="@kSectors">
+                                @for (int i = 1; i <= 12; i++)
                                     {
-                                        <div class="@sectors(i)" @onmousemove="ScopeMouseMove">
-                                            <canvas class="@kImage" style="background: url('@scope.ImageUrl'); @(scope.BackgroundPositions)"></canvas>
-                                        </div>
-                                    }
+                                <div class="@sectors(i)" @onmousemove="ScopeMouseMove">
+                                    <canvas class="@kImage" style="background: url('@scope.ImageUrl'); @(scope.BackgroundPositions)"></canvas>
                                 </div>
-                            </div>
-                        </section>
-                        <div style="padding:5px;" align="center">
-                            <table class="@tools">
-                                <tr>
-                                    <td width="70px" @onclick="(() => ClickPlayAnimation(scope))">
-                                        <img class="animate" src="@scope.AnimationImage" alt="Animate" />
-                                    </td>
-                                    <td width="70px" @onclick="(() => ClickRotate(scope))">
-                                        <img class="rotate" src="@scope.RotateImage" alt="Rotate" />
-                                    </td>
-                                    <td width="70px" @onclick="(() => ClickPlayAudio(scope))">
-                                        <img class="audio" src="@scope.AudioImage" alt="Sound" />
-                                    </td>
-                                    <td width="70px" @onclick="(() => ClickAttachImage(scope))">
-                                        <img class="attachImage" src="@scope.AttachImage" alt="Attach Image" />
-                                    </td>
-                                </tr>
-                            </table>
-                            <div>
-                                <input class="@scope.AttachingImageClass" spellcheck="false" style="visibility: @scope.AttachingImageVisible" type="url" @bind="@scope.ImageUrl" />
+                                    }
                             </div>
                         </div>
+                    </section>
+                    <div style="padding:5px;" align="center">
+                        <table class="@tools">
+                            <tr>
+                                <td width="70px" @onclick="(() => ClickPlayAnimation(scope))">
+                                    <img class="animate" src="@scope.AnimationImage" alt="Animate" />
+                                </td>
+                                <td width="70px" @onclick="(() => ClickRotate(scope))">
+                                    <img class="rotate" src="@scope.RotateImage" alt="Rotate" />
+                                </td>
+                                <td width="70px" @onclick="(() => ClickPlayAudio(scope))">
+                                    <img class="audio" src="@scope.AudioImage" alt="Sound" />
+                                </td>
+                                <td width="70px" @onclick="(() => ClickAttachImage(scope))">
+                                    <img class="attachImage" src="@scope.AttachImage" alt="Attach Image" />
+                                </td>
+                            </tr>
+                        </table>
+                        <div>
+                            <input class="@scope.AttachingImageClass" spellcheck="false" style="visibility: @scope.AttachingImageVisible" type="url" @bind="@scope.ImageUrl" />
+                        </div>
                     </div>
-                </td>
+                </div>
+            </td>
             }
         </tr>
     </table>
@@ -120,24 +124,11 @@
     private string sectors(int sector) { return $"sector sector{sector}"; }
     private const string positionX = "background-Position-x:";
     private const string positionY = "background-Position-y:";
-    private List<Scope> scopes;
+    private List<Scope> scopes = new List<Scope>();
 
     protected override async Task OnInitializedAsync()
     {
-        scopes = new List<Scope>
-        {
-            new Scope { ImageUrl = "https://cdn.globalrose.com/assets/img/temp/banner-fall-globalrose.jpg" },
-            new Scope { ImageUrl = "http://nwdistrict.ifas.ufl.edu/fcs/files/2013/05/Fruit_Bowl.jpg" },
-            new Scope { ImageUrl = "https://www.nextbigfuture.com/wp-content/uploads/2020/01/HERO_coronavirus-730x430.jpg" },
-            new Scope { ImageUrl = "https://www.demilked.com/magazine/wp-content/uploads/2014/01/jumping-spiders-macro-photography-thomas-shahan-1.jpg" },
-            new Scope { ImageUrl = "http://www.funny-potato.com/images/animals/birds/pictures-birds/beautiful-bird.jpg" },
-            new Scope { ImageUrl = "http://www.diyphotography.net/files/images/3/macro-rail-sample_03.jpg" },
-            new Scope { ImageUrl = "http://media-cache-ak0.pinimg.com/736x/ea/c1/9d/eac19d180802f177d4ab2c166179e5ea.jpg" },
-            new Scope { ImageUrl = "http://phandroid.s3.amazonaws.com/wp-content/uploads/2014/05/rainbow-nebula.jpg" },
-            new Scope { ImageUrl = "http://upload.wikimedia.org/wikipedia/commons/1/18/ARS_tropical_fruit_no_labels.jpg" },
-            new Scope { ImageUrl = "https://1.bp.blogspot.com/-HAwJzeLu1P4/VltXs-ooCUI/AAAAAAAAplk/aslPb_H3rso/s1600/jJTQhW9.jpg" }
-        };
-
+        scopes = (await Http.GetJsonAsync<ImagePath[]>("Kaleidax.json")).ToScopes();
         StateHasChanged();
         SlideIn();
     }
