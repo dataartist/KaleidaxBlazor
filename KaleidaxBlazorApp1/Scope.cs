@@ -8,7 +8,7 @@ namespace KaleidaxBlazorApp1
         public string ImageUrl { get; set; }
         public bool IsAnimationPlaying { get; set; } = false;
         public bool IsAudioPlaying { get; set; } = false;
-        public string AudioPlayingAttribute { get { return IsAudioPlaying ? $"audio/track{Index}.mp3" : ""; } }
+        public string AudioUrl { get { return IsAudioPlaying ? $"audio/track{Index}.mp3" : ""; } }
         public bool IsRotating { get; set; } = false;
         public string RotatingClass { get { return IsRotating ? "rotateScope" : ""; } }
         public bool IsAttachingImage { get; set; } = false;

@@ -13,7 +13,7 @@ namespace KaleidaxBlazorApp1
         {
             var scopes = new List<Scope>();
 
-            foreach(var i in images)
+            foreach (var i in images)
             {
                 scopes.Add(new Scope { ImageUrl = i.ImageUrl });
             }

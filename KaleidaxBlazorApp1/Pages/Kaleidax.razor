@@ -3,12 +3,12 @@
 @inject HttpClient Http
 @using System.Threading;
 
-<section id="audiotracks">
-    @foreach (var scope in scopes)
-    {
-        <audio id="audio@(scope.Index)" loop><source id="playerSource@(scope.Index)" src="audio/track@(scope.Index).mp3" /></audio>
-    }
-</section>
+    <section id="audiotracks">
+        @foreach (var scope in scopes)
+        {
+            <audio id="audio@(scope.Index)" loop><source id="playerSource@(scope.Index)" src="@scope.AudioUrl" /></audio>
+        }
+    </section>
 
 <div id="header-wrap" style="margin-left: -33px">
     <div id="header">
