@@ -6,7 +6,7 @@
 <section id="audiotracks">
     @foreach (var scope in scopes)
     {
-    <audio id="audio@(scope.Index)" loop><source id="playerSource@(scope.Index)" src="audio/track@(scope.Index).mp3" /></audio>
+        <audio id="audio@(scope.Index)" loop><source id="playerSource@(scope.Index)" src="audio/track@(scope.Index).mp3" /></audio>
     }
 </section>
 
@@ -27,43 +27,43 @@
         <tr style="padding:10px;">
             @foreach (var scope in scopes)
             {
-            <td style="padding:10px;">
-                <div>
-                    <section class="@kaleidax" imagepath="@scope.ImageUrl" id="k@(scope.Index)">
-                        <div class="@kFrame @(scope.RotatingClass)" @onmousemove="(() => SetScope(scope))">
-                            <div class="@kSectors">
-                                @for (int i = 1; i <= 12; i++)
+                <td style="padding:10px;">
+                    <div>
+                        <section class="@kaleidax" imagepath="@scope.ImageUrl" id="k@(scope.Index)">
+                            <div class="@kFrame @(scope.RotatingClass)" @onmousemove="(() => SetScope(scope))">
+                                <div class="@kSectors">
+                                    @for (int i = 1; i <= 12; i++)
                                     {
-                                <div class="@sectors(i)" @onmousemove="ScopeMouseMove">
-                                    <canvas class="@kImage" style="background: url('@scope.ImageUrl'); @(scope.BackgroundPositions)"></canvas>
-                                </div>
+                                        <div class="@sectors(i)" @onmousemove="ScopeMouseMove">
+                                            <canvas class="@kImage" style="background: url('@scope.ImageUrl'); @(scope.BackgroundPositions)"></canvas>
+                                        </div>
                                     }
+                                </div>
+                            </div>
+                        </section>
+                        <div style="padding:5px;" align="center">
+                            <table class="@tools">
+                                <tr>
+                                    <td width="70px" @onclick="(() => ClickPlayAnimation(scope))">
+                                        <img class="animate" src="@scope.AnimationImage" alt="Animate" />
+                                    </td>
+                                    <td width="70px" @onclick="(() => ClickRotate(scope))">
+                                        <img class="rotate" src="@scope.RotateImage" alt="Rotate" />
+                                    </td>
+                                    <td width="70px" @onclick="(() => ClickPlayAudio(scope))">
+                                        <img class="audio" src="@scope.AudioImage" alt="Sound" />
+                                    </td>
+                                    <td width="70px" @onclick="(() => ClickAttachImage(scope))">
+                                        <img class="attachImage" src="@scope.AttachImage" alt="Attach Image" />
+                                    </td>
+                                </tr>
+                            </table>
+                            <div>
+                                <input class="@scope.AttachingImageClass" spellcheck="false" style="visibility: @scope.AttachingImageVisible" type="url" @bind="@scope.ImageUrl" />
                             </div>
                         </div>
-                    </section>
-                    <div style="padding:5px;" align="center">
-                        <table class="@tools">
-                            <tr>
-                                <td width="70px" @onclick="(() => ClickPlayAnimation(scope))">
-                                    <img class="animate" src="@scope.AnimationImage" alt="Animate" />
-                                </td>
-                                <td width="70px" @onclick="(() => ClickRotate(scope))">
-                                    <img class="rotate" src="@scope.RotateImage" alt="Rotate" />
-                                </td>
-                                <td width="70px" @onclick="(() => ClickPlayAudio(scope))">
-                                    <img class="audio" src="@scope.AudioImage" alt="Sound" />
-                                </td>
-                                <td width="70px" @onclick="(() => ClickAttachImage(scope))">
-                                    <img class="attachImage" src="@scope.AttachImage" alt="Attach Image" />
-                                </td>
-                            </tr>
-                        </table>
-                        <div>
-                            <input class="@scope.AttachingImageClass" spellcheck="false" style="visibility: @scope.AttachingImageVisible" type="url" @bind="@scope.ImageUrl" />
-                        </div>
                     </div>
-                </div>
-            </td>
+                </td>
             }
         </tr>
     </table>
@@ -119,8 +119,10 @@
     private string kSectors { get; set; } = "kSectors";
     private string sector { get { return "sector"; } }
     private string sectors(int sector) { return $"sector sector{sector}"; }
+    private string visibility { get; set; } = "hidden";
     private const string positionX = "background-Position-x:";
     private const string positionY = "background-Position-y:";
+    private Scope CurrentScope { get; set; }
     private List<Scope> scopes = new List<Scope>();
 
     protected override async Task OnInitializedAsync()
@@ -164,7 +166,6 @@
         }
     }
 
-    Scope CurrentScope;
     private async Task SetScope(Scope scope) { CurrentScope = scope; }
 
     private async Task ScopeMouseMove(MouseEventArgs args)
@@ -239,7 +240,6 @@
         }
     }
 
-    private string visibility { get; set; } = "hidden";
     private void SlideIn()
     {
         visibility = "visible";

@@ -3,11 +3,6 @@ using System.Text.Json.Serialization;
 
 namespace KaleidaxBlazorApp1
 {
-    public class ImagePath
-    {
-        public string ImageUrl { get; set; }
-    }
-
     public class Scope
     {
         public string ImageUrl { get; set; }
@@ -39,5 +34,9 @@ namespace KaleidaxBlazorApp1
             SquenceX = new Random().Next(1, Limit);
             SquenceY = new Random().Next(1, Limit);
         }
+    }
+    public class ImagePath
+    {
+        public string ImageUrl { get; set; }
     }
 }
