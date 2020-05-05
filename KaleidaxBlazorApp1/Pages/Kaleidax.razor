@@ -1,14 +1,14 @@
-﻿@page "/Kaleidax"
+﻿@page "/"
 @inject IJSRuntime jsRuntime
 @inject HttpClient Http
 @using System.Threading;
 
-    <section id="audiotracks">
-        @foreach (var scope in scopes)
-        {
-            <audio id="audio@(scope.Index)" loop><source id="playerSource@(scope.Index)" src="@scope.AudioUrl" /></audio>
-        }
-    </section>
+<section id="audiotracks">
+    @foreach (var scope in scopes)
+    {
+        <audio id="audio@(scope.Index)" loop preload="auto"><source id="playerSource@(scope.Index)" src="@scope.AudioUrl" /></audio>
+    }
+</section>
 
 <div id="header-wrap" style="margin-left: -33px">
     <div id="header">
@@ -214,6 +214,7 @@
         TurnOffAllAttachImagePrompts();
         scope.IsAudioPlaying = !scope.IsAudioPlaying;
         scope.AudioImage = scope.AudioImage.ToggleImage();
+        StateHasChanged();
         await jsRuntime.InvokeVoidAsync("PlayAudio", $"audio{scope.Index}", scope.IsAudioPlaying);
     }
 
