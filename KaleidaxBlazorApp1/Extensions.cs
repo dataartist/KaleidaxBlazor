@@ -15,7 +15,7 @@ namespace KaleidaxBlazorApp1
 
             foreach (var i in images)
             {
-                scopes.Add(new Scope { ImageUrl = i.ImageUrl });
+                scopes.Add(new Scope { ImageUrl = i.ImageUrl, AudioUrl = i.AudioUrl });
             }
             return scopes;
         }
